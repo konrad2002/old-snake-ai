@@ -9,8 +9,8 @@ class Settings (object):
         self.gaming = False
         self.direction = 2
         self.highscore = 0
-        self.random = False
+        self.random = True
         self.aiControlled = False
         self.circling = False
         self.visOnPi = False
-        self.saveSteps = True
+        self.saveSteps = False

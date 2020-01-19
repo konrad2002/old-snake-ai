@@ -36,18 +36,17 @@ class DrawingArea(GridLayout):
 
     def update (self, dt):
         app.visAI.draw()
-        text = "highscore: " + str(app.game.settings.highscore) + "\nlenght: " + str(app.game.score) + "\nticks: " + str(app.game.ticks) + "\nspeed: " + str(app.speed) + "\nAIcontrolling: " + str(app.game.settings.aiControlled) + "\nrandom: " + str(app.game.settings.random) + "\ncircling: " + str(app.game.settings.circling)
+        text = "highscore: " + str(app.game.settings.highscore) + "\nlenght: " + str(app.game.score) + "\nticks: " + str(app.game.ticks) + "\nspeed: " + str(app.speed) + "\nAIcontrolling: " + str(app.game.settings.aiControlled) + "\nrandom: " + str(app.game.settings.random) + "\ncircling: " + str(app.game.settings.circling) + "\nwrite db: " + str(app.game.settings.saveSteps) + "\nPi vis: " + str(app.game.settings.visOnPi)
         self.labelInfo.text = text
         if app.game.settings.running:
             app.game.updateScreen()
-            self.food.pos = (55 + (app.game.food.x * 30), 55 + (app.game.food.y * 30))
+            self.food.pos = (25 + (app.game.food.x* 25), 25 + (app.game.food.y* 25))
             i = 0
             while i < len(app.game.snake):
-                self.snake[i].pos = (55 + (app.game.snake[i].x * 30), 55 + (app.game.snake[i].y * 30))
+                self.snake[i].pos = (25 + (app.game.snake[i].x* 25), 25 + (app.game.snake[i].y* 25))
                 i += 1
 
             app.game.ticks += 1
-            print("x:" + str(app.game.snake[0].x) + " | y:" + str(app.game.snake[0].y))
             self.aiSensorDown.text = "wall: " + str(app.game.aiSensors[0][0]) + "\nbody: " + str(app.game.aiSensors[0][1]) + "\nfood: " + str(app.game.aiSensors[0][2])
             self.aiSensorRight.text = "wall: " + str(app.game.aiSensors[1][0]) + "\nbody: " + str(app.game.aiSensors[1][1]) + "\nfood: " + str(app.game.aiSensors[1][2])
             self.aiSensorUp.text = "wall: " + str(app.game.aiSensors[2][0]) + "\nbody: " + str(app.game.aiSensors[2][1]) + "\nfood: " + str(app.game.aiSensors[2][2])
@@ -60,14 +59,14 @@ class DrawingArea(GridLayout):
         with self.canvas:
             # Box
             Color(0.3,0.3,0.3,1)
-            self.box = Rectangle(pos=(50, 50), size=(app.game.settings.width * 30, app.game.settings.height * 30))
+            self.box = Rectangle(pos=(20, 20), size=(app.game.settings.width* 25, app.game.settings.height* 25))
             Color(1,0,0,1)
             self.food = Ellipse(pos=(0, 0), size=(20, 20))
             Color(1,1,1,1)
             self.snake = []
             self.head = Ellipse(pos=(0, 0), size=(20, 20))
             self.snake.append(self.head)
-            self.labelInfo = Label(pos=(app.game.settings.width * 30 + 50, 50))
+            self.labelInfo = Label(pos=(40, app.game.settings.height * 25 + 60))
 
     def addTile (self):
         with self.canvas:
@@ -79,28 +78,28 @@ class DrawingArea(GridLayout):
         self.canvas.clear()
         with self.canvas:
             Color(0.3,0.3,0.3,1)
-            self.box = Rectangle(pos=(50, 50), size=(app.game.settings.width * 30, app.game.settings.height * 30))
+            self.box = Rectangle(pos=(20, 20), size=(app.game.settings.width* 25, app.game.settings.height* 25))
             Color(0,1,0,1)
             self.food = Ellipse(pos=(0, 0), size=(20, 20))
             Color(1,1,1,1)
             self.snake = []
             self.head = Ellipse(pos=(0, 0), size=(20, 20))
             self.snake.append(self.head)
-            self.labelInfo = Label(pos=(app.game.settings.width * 30 + 80, 30))
-            self.aiSensorHeaderDown = Label(pos=(app.game.settings.width * 30 + 470, 275), bold=True, text="DOWN:")
-            self.aiSensorDown = Label(pos=(app.game.settings.width * 30 + 470, 240))
-            self.aiSensorHeaderRight = Label(pos=(app.game.settings.width * 30 + 470, 195), bold=True, text="RIGHT:")
-            self.aiSensorRight = Label(pos=(app.game.settings.width * 30 + 470, 160))
-            self.aiSensorHeaderUp = Label(pos=(app.game.settings.width * 30 + 470, 115), bold=True, text="UP:")
-            self.aiSensorUp = Label(pos=(app.game.settings.width * 30 + 470, 80))
-            self.aiSensorHeaderLeft = Label(pos=(app.game.settings.width * 30 + 470, 35), bold=True, text="LEFT:")
-            self.aiSensorLeft = Label(pos=(app.game.settings.width * 30 + 470, 0))
+            self.labelInfo = Label(pos=(40, app.game.settings.height * 25 + 60))
+            self.aiSensorHeaderDown = Label(pos=(500, app.game.settings.height * 25 + 130), bold=True, text="DOWN:")
+            self.aiSensorDown = Label(pos=(500, app.game.settings.height * 25 + 95))
+            self.aiSensorHeaderRight = Label(pos=(600, app.game.settings.height * 25 + 130), bold=True, text="RIGHT:")
+            self.aiSensorRight = Label(pos=(600, app.game.settings.height * 25 + 95))
+            self.aiSensorHeaderUp = Label(pos=(500, app.game.settings.height * 25 + 40), bold=True, text="UP:")
+            self.aiSensorUp = Label(pos=(500, app.game.settings.height * 25 + 5))
+            self.aiSensorHeaderLeft = Label(pos=(600, app.game.settings.height * 25 + 40), bold=True, text="LEFT:")
+            self.aiSensorLeft = Label(pos=(600, app.game.settings.height * 25 + 5))
 
 # widget for network visualisation
 class visAI (Widget):
     def __init__ (self, **kwargs):
         super(visAI, self).__init__(**kwargs)
-        self.btn_draw = Button(text='update', on_press=self.draw, pos=(app.game.settings.width * 30 + 60, 280), size=(100,30))
+        self.btn_draw = Button(text='update', on_press=self.draw, pos=(app.game.settings.width* 25 + 60, 280), size=(100,30))
         self.add_widget(self.btn_draw)
         self.draw()
 
@@ -109,9 +108,9 @@ class visAI (Widget):
             self.canvas.clear()
             # border and box
             Color(1,1,1,1)
-            self.border = Rectangle(pos=(app.game.settings.width * 30 + 60, 340), size=(500, 430))
+            self.border = Rectangle(pos=(app.game.settings.width* 25 + 60, 20), size=(650, 750))
             Color(0,0,0,1)
-            self.box = Rectangle(pos=(app.game.settings.width * 30 + 62, 342), size=(496, 426))
+            self.box = Rectangle(pos=(app.game.settings.width* 25 + 62, 22), size=(646, 746))
 
             if app.game.settings.aiControlled:
                 if hasattr(app, 'ai'):
@@ -122,7 +121,7 @@ class visAI (Widget):
                         if i == 0:
                             # if bias color red
                             Color(1,0.1,0.1,1)
-                        neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 20, 342 + 40 + i * 27), size=(23, 23))
+                        neuron = Ellipse(pos=(app.game.settings.width * 25 + 62 + 20, 80 + i * 50), size=(23, 23))
                         self.inputNeurons.append(neuron)
                     
                     # draw hidden neurons and save in array
@@ -133,15 +132,15 @@ class visAI (Widget):
                         if i == 0:
                             # if bias color red
                             Color(1,0.1,0.1,1)
-                        neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 240, 342 + 5 + i * 24), size=(23, 23))
+                        neuron = Ellipse(pos=(app.game.settings.width * 25 + 62 + 320, 50 + i * 42), size=(23, 23))
                         self.hiddenNeurons.append(neuron)
 
                     # draw output neurons and save in array
                     Color(1,1,1,1)
                     self.outputNeurons = []
                     for i in range(4):
-                        Color(1,1,1,(app.ai.network[4][i,2]))
-                        neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 460, 342 + 130 + i * 40), size=(23, 23))
+                        Color(1,1,1,(app.ai.network[4][i+1,2]))
+                        neuron = Ellipse(pos=(app.game.settings.width* 25 + 62 + 580, 300 + i * 60), size=(23, 23))
                         self.outputNeurons.append(neuron)
 
                     Color(1,1,1,1)
@@ -151,10 +150,10 @@ class visAI (Widget):
                             if brightness >= 1:
                                 brightness = 1
                             if app.ai.network[1][j,i] < 0:
-                                Color(0.1, 0.5, 1, brightness)
+                                Color(0.1, 0.5, 1, 1)
                             else:
-                                Color(1, 0.3, 0.3, brightness)
-                            Line(points=[app.game.settings.width * 30 + 62 + 43, 342 + 40 + 11 + i * 27, app.game.settings.width * 30 + 62 + 240, 342 + 5 + 11 + j * 24], width=0.5)
+                                Color(1, 0.3, 0.3, 1)
+                            Line(points=[app.game.settings.width * 25 + 62 + 20 + 23, 80 + i * 50 + 11, app.game.settings.width * 25 + 62 + 320, 50 + j * 42 + 11], width=brightness*2)
 
                     Color(1,1,1,1)
                     for i,n in enumerate(self.hiddenNeurons):
@@ -163,10 +162,10 @@ class visAI (Widget):
                             if brightness >= 1:
                                 brightness = 1
                             if app.ai.network[3][j,i] < 0:
-                                Color(0.1, 0.5, 1, brightness)
+                                Color(0.1, 0.5, 1, 1)
                             else:
-                                Color(1, 0.3, 0.3, brightness)
-                            Line(points=[app.game.settings.width * 30 + 85 + 240, 342 + 5 + 11 + i * 24, app.game.settings.width * 30 + 62 + 460, 342 + 130 + 11 + j * 40], width=0.5)
+                                Color(1, 0.3, 0.3, 1)
+                            Line(points=[app.game.settings.width * 25 + 62 + 320 + 23, 50 + i * 42 + 11, app.game.settings.width* 25 + 62 + 580, 300 + j * 60 + 11], width=brightness*2)
 
 
 class Controller (Widget):
@@ -177,14 +176,15 @@ class Controller (Widget):
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
-        self.btn_up = Button(text='up', on_press=self.changeDirectionUp, pos=(app.game.settings.width * 30 + 270, 220))
-        self.btn_left = Button(text='left', on_press=self.changeDirectionLeft, pos=(app.game.settings.width * 30 + 170, 120))
-        self.btn_down = Button(text='down', on_press=self.changeDirectionDown, pos=(app.game.settings.width * 30 + 270, 20))
-        self.btn_right = Button(text='right', on_press=self.changeDirectionRight, pos=(app.game.settings.width * 30 + 370, 120))
-        self.btn_break = Button(text='break', on_press=self.breakGame, pos=(app.game.settings.width * 30 + 270, 120))
-        self.btn_ai = Button(text='AIcontrolling', on_press=self.aiControlling, pos=(app.game.settings.width * 30 + 60, 150), size=(100,30))
-        self.btn_rnd = Button(text='random', on_press=self.random, pos=(app.game.settings.width * 30 + 60, 185), size=(100,30))
-        self.btn_circle = Button(text='circle', on_press=self.circling, pos=(app.game.settings.width * 30 + 60, 220), size=(100,30))
+        self.btn_up = Button(text='up', on_press=self.changeDirectionUp, pos=(350, app.game.settings.height * 25 + 100), size=(50,50))
+        self.btn_left = Button(text='left', on_press=self.changeDirectionLeft, pos=(300, app.game.settings.height * 25 + 50), size=(50,50))
+        self.btn_down = Button(text='down', on_press=self.changeDirectionDown, pos=(350, app.game.settings.height * 25 + 50), size=(50,50))
+        self.btn_right = Button(text='right', on_press=self.changeDirectionRight, pos=(400, app.game.settings.height * 25 + 50), size=(50,50))
+        self.btn_break = Button(text='break', on_press=self.breakGame, pos=(300, app.game.settings.height * 25 + 100), size=(50,50))
+        self.btn_ai = Button(text='AIcontrolling', on_press=self.aiControlling, pos=(180, app.game.settings.height * 25 + 160), size=(100,30))
+        self.btn_rnd = Button(text='random', on_press=self.random, pos=(180, app.game.settings.height * 25 + 125), size=(100,30))
+        self.btn_circle = Button(text='circle', on_press=self.circling, pos=(180, app.game.settings.height * 25 + 90), size=(100,30))
+        self.btn_save = Button(text='save steps', on_press=self.save, pos=(180, app.game.settings.height * 25 + 30), size=(100,30))
 
         self.add_widget(self.btn_up)
         self.add_widget(self.btn_left)
@@ -194,6 +194,7 @@ class Controller (Widget):
         self.add_widget(self.btn_ai)
         self.add_widget(self.btn_rnd)
         self.add_widget(self.btn_circle)
+        self.add_widget(self.btn_save)
 
     
     def _keyboard_closed(self):
@@ -227,6 +228,12 @@ class Controller (Widget):
             app.game.settings.running = False
         else:
             app.game.settings.running = True
+
+    def save (self, d):
+        if app.game.settings.saveSteps:
+            app.game.settings.saveSteps = False
+        else:
+            app.game.settings.saveSteps = True
         
     def random (self, d):
         # activate / deactivate random function when choosen
@@ -286,7 +293,7 @@ class SnakeApp (App):
         self.visAI = visAI()
 
         # test weights
-        W_IH = np.matrix([[-0.22,-0.22,-0.22,-0.22,-0.22,1.0,1.2,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]])
+        W_IH = np.matrix([[-0.22,-0.22,-0.22,-0.22,-0.22,1.0,1.2,-0.22,-0.22,-0.22,-0.22,-0.22,-2.3],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,2.3,-0.22,-0.22,-0.22,-0.22,2.3,-0.22,-0.22,-0.22],[-0.22,2.3,-0.22,-0.22,-0.22,-0.22,-0.22,-2.3,2.3,2.3,-0.22,-0.22,-0.22],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]])
         W_HO = np.matrix([[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,1.5,1.5]])
         weights = []
         weights.append(W_IH)
@@ -306,9 +313,8 @@ class SnakeApp (App):
         root.add_widget(self.controller)
         root.add_widget(self.visAI)
 
-        if app.game.settings.saveSteps:
-            self.db = sqlite3.connect("file:trainingData.db?mode=rwc", uri=True)
-            self.cursor = self.db.cursor()
+        self.db = sqlite3.connect("file:trainingData.db?mode=rwc", uri=True)
+        self.cursor = self.db.cursor()
 
         return root
 
