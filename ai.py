@@ -66,6 +66,20 @@ class MultiLayerPerceptron (object):
 
         return self.network[4][1:,2]
 
+    def learn (self, cursor):
+        sql_command = "SELECT * FROM trainingExamples WHERE newDirection = 1"
+        cursor.execute(sql_command)
+        rows = cursor.fetchall()
+        X = []
+        for row in rows:
+            x = []
+            x.append(1)
+            for i in range(14):
+                if i > 1:
+                    x.append(row[i])
+            X.append(x)
+        print(X)
+
 
 # ----------------------------------------------------------------------------------------------
 # W_HI = np.matrix([[0.0,0.0,0.0],[-10.0,20.0,20.0],[30.0,-20.0,-20.0]])

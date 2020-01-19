@@ -185,6 +185,7 @@ class Controller (Widget):
         self.btn_rnd = Button(text='random', on_press=self.random, pos=(180, app.game.settings.height * 25 + 125), size=(100,30))
         self.btn_circle = Button(text='circle', on_press=self.circling, pos=(180, app.game.settings.height * 25 + 90), size=(100,30))
         self.btn_save = Button(text='save steps', on_press=self.save, pos=(180, app.game.settings.height * 25 + 30), size=(100,30))
+        self.btn_learn = Button(text='LEARN', on_press=self.learn, pos=(700, app.game.settings.height * 25 + 130), size=(100,50))
 
         self.add_widget(self.btn_up)
         self.add_widget(self.btn_left)
@@ -195,6 +196,7 @@ class Controller (Widget):
         self.add_widget(self.btn_rnd)
         self.add_widget(self.btn_circle)
         self.add_widget(self.btn_save)
+        self.add_widget(self.btn_learn)
 
     
     def _keyboard_closed(self):
@@ -235,6 +237,9 @@ class Controller (Widget):
         else:
             app.game.settings.saveSteps = True
         
+    def learn (self, d):
+        app.ai.learn(app.cursor)
+
     def random (self, d):
         # activate / deactivate random function when choosen
         if app.game.settings.random:
@@ -492,13 +497,14 @@ class SnakeGame (object):
 
         if not (self.settings.random or self.settings.aiControlled or self.settings.circling):
             if app.game.settings.saveSteps:
-                print("save: " + str(self.settings.direction) + " with " + str(self.isNewDirection))
-                dataString = "(" + str(self.isNewDirection) + ", " + str(app.game.aiSensors[0][0]) + "," + str(app.game.aiSensors[0][1]) + "," + str(app.game.aiSensors[0][2]) + "," + str(app.game.aiSensors[1][0]) + "," + str(app.game.aiSensors[1][1]) + "," + str(app.game.aiSensors[1][2]) + "," + str(app.game.aiSensors[2][0]) + "," + str(app.game.aiSensors[2][1]) + "," + str(app.game.aiSensors[2][2]) + "," + str(app.game.aiSensors[3][0]) + "," + str(app.game.aiSensors[3][1]) + "," + str(app.game.aiSensors[3][2]) + "," + str(self.settings.direction) + ")"
-                sql_command = "INSERT INTO trainingExamples (newDirection, aiSensor_0_0, aiSensor_0_1, aiSensor_0_2, aiSensor_1_0, aiSensor_1_1, aiSensor_1_2, aiSensor_2_0, aiSensor_2_1, aiSensor_2_2, aiSensor_3_0, aiSensor_3_1, aiSensor_3_2, direction) VALUES " + dataString + ";"
+                if not (self.aiSensors[0][0] < 1 or self.aiSensors[1][0] < 1 or self.aiSensors[2][0] < 1 or self.aiSensors[3][0] < 1):
+                    print("save: " + str(self.settings.direction) + " with " + str(self.isNewDirection))
+                    dataString = "(" + str(self.isNewDirection) + ", " + str(app.game.aiSensors[0][0]) + "," + str(app.game.aiSensors[0][1]) + "," + str(app.game.aiSensors[0][2]) + "," + str(app.game.aiSensors[1][0]) + "," + str(app.game.aiSensors[1][1]) + "," + str(app.game.aiSensors[1][2]) + "," + str(app.game.aiSensors[2][0]) + "," + str(app.game.aiSensors[2][1]) + "," + str(app.game.aiSensors[2][2]) + "," + str(app.game.aiSensors[3][0]) + "," + str(app.game.aiSensors[3][1]) + "," + str(app.game.aiSensors[3][2]) + "," + str(self.settings.direction) + ")"
+                    sql_command = "INSERT INTO trainingExamples (newDirection, aiSensor_0_0, aiSensor_0_1, aiSensor_0_2, aiSensor_1_0, aiSensor_1_1, aiSensor_1_2, aiSensor_2_0, aiSensor_2_1, aiSensor_2_2, aiSensor_3_0, aiSensor_3_1, aiSensor_3_2, direction) VALUES " + dataString + ";"
 
-                # add direction changes to learndata in db
-                app.cursor.execute(sql_command)
-                app.db.commit()
+                    # add direction changes to learndata in db
+                    app.cursor.execute(sql_command)
+                    app.db.commit()
 
         # reset sensors
         self.aiSensors[0][1:] = 0
