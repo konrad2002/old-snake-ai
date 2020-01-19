@@ -1,0 +1,16 @@
+class Settings (object):
+    def __init__ (self):
+        self.width = 32
+        self.height = 24
+        self.speed = 100
+        self.score = 0
+        self.points = 100
+        self.running = False
+        self.gaming = False
+        self.direction = 2
+        self.highscore = 0
+        self.random = False
+        self.aiControlled = False
+        self.circling = False
+        self.visOnPi = False
+        self.saveSteps = False
