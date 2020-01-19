@@ -1,5 +1,7 @@
 # SnakeAI
 little python snake ai with multi lapyer percetron learning and genetic algorithm
+![snake ai app 1.4](http://logilutions.de/files/snakeai5.png)
+
 ![snake ai app 1.3](http://logilutions.de/files/snakeai4.png)
 
 ![snake ai app 1.2](http://logilutions.de/files/snakeai3.png)

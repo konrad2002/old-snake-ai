@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib as plt
+from sklearn.utils.validation import check_random_state
 
 class MultiLayerPerceptron (object):
     def func_id (self, x):
@@ -11,11 +12,13 @@ class MultiLayerPerceptron (object):
     def func_relu (self, x):
         return np.maximum(x, 0)
     
-    def __init__ (self, nInputNeurons = 12, nHiddenNeurons = 16, nOutputNeurons = 4, weights = None, *args, **kwargs):
+    def __init__ (self, nInputNeurons = 12, nHiddenNeurons = 16, nOutputNeurons = 4, weights = None, random_state = 41, *args, **kwargs):
         self.nInputNeurons = nInputNeurons
         self.nHiddenNeurons = nHiddenNeurons
         self.nOutputNeurons = nOutputNeurons
         self.weights = weights
+
+        self.random_state_ = check_random_state(random_state)
 
         self.network = []
 
@@ -24,10 +27,10 @@ class MultiLayerPerceptron (object):
         self.network.append(self.inputLayer)
 
         if weights:
-            W_HI = self.weights[0]
+            W_IH = self.weights[0]
         else:
-            W_HI = np.zeros(self.nHiddenNeurons + 1, self.nInputNeurons + 1)
-        self.network.append(W_HI)
+            W_IH = 2 * self.random_state_.random_sample((self.nHiddenNeurons + 1, self.nInputNeurons + 1)) - 1
+        self.network.append(W_IH)
 
         self.hiddenLayer = np.zeros((self.nHiddenNeurons + 1, 3))
         self.hiddenLayer[0] = 1.0
@@ -36,7 +39,7 @@ class MultiLayerPerceptron (object):
         if weights:
             W_HO = weights[1]
         else:
-            W_HO = np.zeros(self.nOutputNeurons + 1, self.nHiddenNeurons + 1)
+            W_HO = 2 * self.random_state_.random_sample((self.nOutputNeurons + 1, self.nHiddenNeurons + 1)) - 1
         self.network.append(W_HO)
 
         self.outputLayer = np.zeros((self.nOutputNeurons + 1, 3))
@@ -65,22 +68,22 @@ class MultiLayerPerceptron (object):
 
 
 # ----------------------------------------------------------------------------------------------
-W_HI = np.matrix([[0.0,0.0,0.0],[-10.0,20.0,20.0],[30.0,-20.0,-20.0]])
-W_HO = np.matrix([[0.0,0.0,0.0],[-30.0,20.0,20.0]])
+# W_HI = np.matrix([[0.0,0.0,0.0],[-10.0,20.0,20.0],[30.0,-20.0,-20.0]])
+# W_HO = np.matrix([[0.0,0.0,0.0],[-30.0,20.0,20.0]])
 
-W_HI = np.matrix([[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]])
-W_HO = np.matrix([[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]])
+# W_HI = np.matrix([[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]])
+# W_HO = np.matrix([[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]])
 
-weights = []
-weights.append(W_HI)
-weights.append(W_HO)
+# weights = []
+# weights.append(W_HI)
+# weights.append(W_HO)
 
-nn = MultiLayerPerceptron(weights=weights)
-nn.print()
+# nn = MultiLayerPerceptron(weights=weights)
+# nn.print()
 
-X = np.array([[1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]])
-y = np.array([0,1.0,1.0,0])
+# X = np.array([[1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]])
+# y = np.array([0,1.0,1.0,0])
 
-print("Predict function:")
-for idx,x in enumerate (X):
-    print("{} {} => {}".format(x,y[idx],nn.predict(x)))
+# print("Predict function:")
+# for idx,x in enumerate (X):
+#     print("{} {} => {}".format(x,y[idx],nn.predict(x)))

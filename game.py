@@ -158,10 +158,10 @@ class visAI (Widget):
                     Color(1,1,1,1)
                     for i,n in enumerate(self.hiddenNeurons):
                         for j,m in enumerate(self.outputNeurons):
-                            brightness = ( abs(app.ai.network[3][j,i]) / 4)
+                            brightness = ( abs(app.ai.network[3][j+1,i]) / 4)
                             if brightness >= 1:
                                 brightness = 1
-                            if app.ai.network[3][j,i] < 0:
+                            if app.ai.network[3][j+1,i] < 0:
                                 Color(0.1, 0.5, 1, 1)
                             else:
                                 Color(1, 0.3, 0.3, 1)
@@ -300,8 +300,8 @@ class SnakeApp (App):
         weights.append(W_HO)
 
         # initialise MLP
-        self.ai = MultiLayerPerceptron(12, 16, 4, weights)
-
+        self.ai = MultiLayerPerceptron(12, 16, 4)
+        self.ai.print()
         self.speed = self.game.settings.speed
 
         # clock executing gametick for speed from settings
