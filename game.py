@@ -14,7 +14,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
-from kivy.graphics import Rectangle,Canvas,Ellipse,Color
+from kivy.graphics import Rectangle,Canvas,Ellipse,Color,Line
 from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -139,6 +139,16 @@ class visAI (Widget):
                     Color(1,1,1,(app.ai.network[4][i,2]))
                     neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 460, 342 + 130 + i * 40), size=(23, 23))
                     self.outputNeurons.append(neuron)
+
+                Color(1,1,1,1)
+                for i,n in enumerate(self.inputNeurons):
+                    for j,m in enumerate(self.hiddenNeurons):
+                        Line(points=[app.game.settings.width * 30 + 62 + 43, 342 + 40 + 11 + i * 27, app.game.settings.width * 30 + 62 + 240, 342 + 5 + 11 + j * 24], width=0.5)
+
+                Color(1,1,1,1)
+                for i,n in enumerate(self.hiddenNeurons):
+                    for j,m in enumerate(self.outputNeurons):
+                        Line(points=[app.game.settings.width * 30 + 85 + 240, 342 + 5 + 11 + i * 24, app.game.settings.width * 30 + 62 + 460, 342 + 130 + 11 + j * 40], width=0.5)
 
 
 class Controller (Widget):
