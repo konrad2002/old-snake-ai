@@ -13,4 +13,4 @@ class Settings (object):
         self.aiControlled = False
         self.circling = False
         self.visOnPi = False
-        self.saveSteps = False
+        self.saveSteps = True

@@ -100,55 +100,73 @@ class DrawingArea(GridLayout):
 class visAI (Widget):
     def __init__ (self, **kwargs):
         super(visAI, self).__init__(**kwargs)
+        self.btn_draw = Button(text='update', on_press=self.draw, pos=(app.game.settings.width * 30 + 60, 280), size=(100,30))
+        self.add_widget(self.btn_draw)
         self.draw()
 
     def draw (self):
         with self.canvas:
+            self.canvas.clear()
             # border and box
             Color(1,1,1,1)
             self.border = Rectangle(pos=(app.game.settings.width * 30 + 60, 340), size=(500, 430))
             Color(0,0,0,1)
             self.box = Rectangle(pos=(app.game.settings.width * 30 + 62, 342), size=(496, 426))
 
-            if hasattr(app, 'ai'):
-                # draw input neurons and save in array
-                self.inputNeurons = []
-                for i in range(13):
-                    Color(1,1,1,(app.ai.network[0][i] / 24))
-                    if i == 12:
-                        # if bias color red
-                        Color(1,0.1,0.1,1)
-                    neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 20, 342 + 40 + i * 27), size=(23, 23))
-                    self.inputNeurons.append(neuron)
-                
-                # draw hidden neurons and save in array
-                Color(1,1,1,1)
-                self.hiddenNeurons = []
-                for i in range(17):
-                    Color(1,1,1,(app.ai.network[2][i,2]))
-                    if i == 16:
-                        # if bias color red
-                        Color(1,0.1,0.1,1)
-                    neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 240, 342 + 5 + i * 24), size=(23, 23))
-                    self.hiddenNeurons.append(neuron)
+            if app.game.settings.aiControlled:
+                if hasattr(app, 'ai'):
+                    # draw input neurons and save in array
+                    self.inputNeurons = []
+                    for i in range(13):
+                        Color(1,1,1,(app.ai.network[0][i] / 24))
+                        if i == 0:
+                            # if bias color red
+                            Color(1,0.1,0.1,1)
+                        neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 20, 342 + 40 + i * 27), size=(23, 23))
+                        self.inputNeurons.append(neuron)
+                    
+                    # draw hidden neurons and save in array
+                    Color(1,1,1,1)
+                    self.hiddenNeurons = []
+                    for i in range(17):
+                        Color(1,1,1,(app.ai.network[2][i,2]))
+                        if i == 0:
+                            # if bias color red
+                            Color(1,0.1,0.1,1)
+                        neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 240, 342 + 5 + i * 24), size=(23, 23))
+                        self.hiddenNeurons.append(neuron)
 
-                # draw output neurons and save in array
-                Color(1,1,1,1)
-                self.outputNeurons = []
-                for i in range(4):
-                    Color(1,1,1,(app.ai.network[4][i,2]))
-                    neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 460, 342 + 130 + i * 40), size=(23, 23))
-                    self.outputNeurons.append(neuron)
+                    # draw output neurons and save in array
+                    Color(1,1,1,1)
+                    self.outputNeurons = []
+                    for i in range(4):
+                        Color(1,1,1,(app.ai.network[4][i,2]))
+                        neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 460, 342 + 130 + i * 40), size=(23, 23))
+                        self.outputNeurons.append(neuron)
 
-                Color(1,1,1,1)
-                for i,n in enumerate(self.inputNeurons):
-                    for j,m in enumerate(self.hiddenNeurons):
-                        Line(points=[app.game.settings.width * 30 + 62 + 43, 342 + 40 + 11 + i * 27, app.game.settings.width * 30 + 62 + 240, 342 + 5 + 11 + j * 24], width=0.5)
+                    Color(1,1,1,1)
+                    for i,n in enumerate(self.inputNeurons):
+                        for j,m in enumerate(self.hiddenNeurons):
+                            brightness = ( abs(app.ai.network[1][j,i]) / 4)
+                            if brightness >= 1:
+                                brightness = 1
+                            if app.ai.network[1][j,i] < 0:
+                                Color(0.1, 0.5, 1, brightness)
+                            else:
+                                Color(1, 0.3, 0.3, brightness)
+                            Line(points=[app.game.settings.width * 30 + 62 + 43, 342 + 40 + 11 + i * 27, app.game.settings.width * 30 + 62 + 240, 342 + 5 + 11 + j * 24], width=0.5)
 
-                Color(1,1,1,1)
-                for i,n in enumerate(self.hiddenNeurons):
-                    for j,m in enumerate(self.outputNeurons):
-                        Line(points=[app.game.settings.width * 30 + 85 + 240, 342 + 5 + 11 + i * 24, app.game.settings.width * 30 + 62 + 460, 342 + 130 + 11 + j * 40], width=0.5)
+                    Color(1,1,1,1)
+                    for i,n in enumerate(self.hiddenNeurons):
+                        for j,m in enumerate(self.outputNeurons):
+                            brightness = ( abs(app.ai.network[3][j,i]) / 4)
+                            if brightness >= 1:
+                                brightness = 1
+                            if app.ai.network[3][j,i] < 0:
+                                Color(0.1, 0.5, 1, brightness)
+                            else:
+                                Color(1, 0.3, 0.3, brightness)
+                            Line(points=[app.game.settings.width * 30 + 85 + 240, 342 + 5 + 11 + i * 24, app.game.settings.width * 30 + 62 + 460, 342 + 130 + 11 + j * 40], width=0.5)
 
 
 class Controller (Widget):
@@ -183,6 +201,7 @@ class Controller (Widget):
         self._keyboard = None
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        print(keycode)
         if keycode[1] == 'left':
             self.changeDirection(direction = 3)
         elif keycode[1] == 'right':
@@ -191,6 +210,8 @@ class Controller (Widget):
             self.changeDirection(direction = 2)
         elif keycode[1] == 'down':
             self.changeDirection(direction = 0)
+        elif keycode[1] == 'spacebar':
+            self.breakGame(0)
         return True
 
     def changeDirectionUp (self, d):
@@ -254,25 +275,18 @@ class Controller (Widget):
         # if player is playing save direction in database
         if not (app.game.settings.aiControlled or app.game.settings.circling or app.game.settings.random):
             app.game.newDirection = direction
-            if app.game.settings.saveSteps:
-                print("save: " + str(direction))
-                dataString = "(" + str(app.game.aiSensors[0][0]) + "," + str(app.game.aiSensors[0][1]) + "," + str(app.game.aiSensors[0][2]) + "," + str(app.game.aiSensors[1][0]) + "," + str(app.game.aiSensors[1][1]) + "," + str(app.game.aiSensors[1][2]) + "," + str(app.game.aiSensors[2][0]) + "," + str(app.game.aiSensors[2][1]) + "," + str(app.game.aiSensors[2][2]) + "," + str(app.game.aiSensors[3][0]) + "," + str(app.game.aiSensors[3][1]) + "," + str(app.game.aiSensors[3][2]) + "," + str(direction) + ")"
-                sql_command = "INSERT INTO testData (aiSensor_0_0, aiSensor_0_1, aiSensor_0_2, aiSensor_1_0, aiSensor_1_1, aiSensor_1_2, aiSensor_2_0, aiSensor_2_1, aiSensor_2_2, aiSensor_3_0, aiSensor_3_1, aiSensor_3_2, direction) VALUES " + dataString + ";"
-
-                # add direction changes to learndata in db
-                app.cursor.execute(sql_command)
-                app.db.commit()
 
 # main application
 class SnakeApp (App):
     def build (self):
+        Window.size = (1400, 800)
         self.game = SnakeGame()             # initialize game stuff
         self.drawingArea = DrawingArea()    # create drawing area
         self.controller = Controller()      # create controller
         self.visAI = visAI()
 
         # test weights
-        W_IH = np.matrix([[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]])
+        W_IH = np.matrix([[-0.22,-0.22,-0.22,-0.22,-0.22,1.0,1.2,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]])
         W_HO = np.matrix([[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5],[1.5,1.5,1.5,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22],[-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,-0.22,1.5,1.5]])
         weights = []
         weights.append(W_IH)
@@ -380,6 +394,7 @@ class SnakeGame (object):
         self.settings.gaming = False    # stop game
 
     def movePlayer (self):
+        # if random
         if self.settings.random:
             self.newDirection = randrange(0, 4)
             if self.aiSensors[0][2]:
@@ -400,65 +415,86 @@ class SnakeGame (object):
             if self.aiSensors[2][0] > self.settings.height -1:
                 self.newDirection = 3
 
-        # AI CONTROLLING including AI predict
-        if self.settings.aiControlled:
-            # ai sensor values to input array
-            x = []
-            x.append(1)
-            x.append(self.aiSensors[0][0])
-            x.append(self.aiSensors[0][1])
-            x.append(self.aiSensors[0][2])
-            x.append(self.aiSensors[1][0])
-            x.append(self.aiSensors[1][1])
-            x.append(self.aiSensors[1][2])
-            x.append(self.aiSensors[2][0])
-            x.append(self.aiSensors[2][1])
-            x.append(self.aiSensors[2][2])
-            x.append(self.aiSensors[3][0])
-            x.append(self.aiSensors[3][1])
-            x.append(self.aiSensors[3][2])
-
-            # calculate output of network
-            output = app.ai.predict(x)
-            print(output)
-
-            # new direction from network ouput
-            self.newDirection = np.argmax(output)
-            print(self.newDirection)
-
         else:
-            if self.settings.circling:
-                self.newDirection = 3
-                if  self.snake[0].x == 0:
-                    if self.settings.direction == 3:
-                        self.newDirection = 0
-                    else:
-                        if self.settings.direction == 0:
-                            self.newDirection = 1
-                else:
-                    if self.snake[0].x == self.settings.width - 2:
-                        if self.settings.direction == 1:
+            # AI CONTROLLING including AI predict
+            if self.settings.aiControlled:
+                # ai sensor values to input array
+                x = []
+                x.append(1)
+                x.append(self.aiSensors[0][0])
+                x.append(self.aiSensors[0][1])
+                x.append(self.aiSensors[0][2])
+                x.append(self.aiSensors[1][0])
+                x.append(self.aiSensors[1][1])
+                x.append(self.aiSensors[1][2])
+                x.append(self.aiSensors[2][0])
+                x.append(self.aiSensors[2][1])
+                x.append(self.aiSensors[2][2])
+                x.append(self.aiSensors[3][0])
+                x.append(self.aiSensors[3][1])
+                x.append(self.aiSensors[3][2])
+
+                # calculate output of network
+                output = app.ai.predict(x)
+                print(output)
+
+                # new direction from network ouput
+                self.newDirection = np.argmax(output)
+                print(self.newDirection)
+
+            else:
+                if self.settings.circling:
+                    self.newDirection = 3
+                    if  self.snake[0].x == 0:
+                        if self.settings.direction == 3:
                             self.newDirection = 0
                         else:
                             if self.settings.direction == 0:
-                                self.newDirection = 3
-                if self.snake[0].y == 0:
-                    self.newDirection = 1
-                
-                if self.snake[0].x == self.settings.width - 1:
-                    if self.snake[0].y == self.settings.height - 1:
-                        self.newDirection = 3
+                                self.newDirection = 1
                     else:
-                        self.newDirection = 2
+                        if self.snake[0].x == self.settings.width - 2:
+                            if self.settings.direction == 1:
+                                self.newDirection = 0
+                            else:
+                                if self.settings.direction == 0:
+                                    self.newDirection = 3
+                    if self.snake[0].y == 0:
+                        self.newDirection = 1
+                    
+                    if self.snake[0].x == self.settings.width - 1:
+                        if self.snake[0].y == self.settings.height - 1:
+                            self.newDirection = 3
+                        else:
+                            self.newDirection = 2
 
+        self.isNewDirection = 0
+        if self.settings.direction != self.newDirection:
+            self.isNewDirection = 1
+
+        # only step in newDirection if there is no 180° turn around
         if self.settings.direction < 2:
             if self.settings.direction + 2 != self.newDirection:
                 self.settings.direction = self.newDirection
+            else:
+                self.isNewDirection = 0
         else:
             if self.settings.direction > 1:
                 if self.settings.direction - 2 != self.newDirection:
                     self.settings.direction = self.newDirection
+                else:
+                    self.isNewDirection = 0
 
+        if not (self.settings.random or self.settings.aiControlled or self.settings.circling):
+            if app.game.settings.saveSteps:
+                print("save: " + str(self.settings.direction) + " with " + str(self.isNewDirection))
+                dataString = "(" + str(self.isNewDirection) + ", " + str(app.game.aiSensors[0][0]) + "," + str(app.game.aiSensors[0][1]) + "," + str(app.game.aiSensors[0][2]) + "," + str(app.game.aiSensors[1][0]) + "," + str(app.game.aiSensors[1][1]) + "," + str(app.game.aiSensors[1][2]) + "," + str(app.game.aiSensors[2][0]) + "," + str(app.game.aiSensors[2][1]) + "," + str(app.game.aiSensors[2][2]) + "," + str(app.game.aiSensors[3][0]) + "," + str(app.game.aiSensors[3][1]) + "," + str(app.game.aiSensors[3][2]) + "," + str(self.settings.direction) + ")"
+                sql_command = "INSERT INTO trainingExamples (newDirection, aiSensor_0_0, aiSensor_0_1, aiSensor_0_2, aiSensor_1_0, aiSensor_1_1, aiSensor_1_2, aiSensor_2_0, aiSensor_2_1, aiSensor_2_2, aiSensor_3_0, aiSensor_3_1, aiSensor_3_2, direction) VALUES " + dataString + ";"
+
+                # add direction changes to learndata in db
+                app.cursor.execute(sql_command)
+                app.db.commit()
+
+        # reset sensors
         self.aiSensors[0][1:] = 0
         self.aiSensors[1][1:] = 0
         self.aiSensors[2][1:] = 0
