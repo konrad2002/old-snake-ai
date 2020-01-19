@@ -125,6 +125,7 @@ class visAI (Widget):
                 Color(1,1,1,1)
                 self.hiddenNeurons = []
                 for i in range(17):
+                    Color(1,1,1,(app.ai.network[2][i,2]))
                     if i == 16:
                         # if bias color red
                         Color(1,0.1,0.1,1)
@@ -135,6 +136,7 @@ class visAI (Widget):
                 Color(1,1,1,1)
                 self.outputNeurons = []
                 for i in range(4):
+                    Color(1,1,1,(app.ai.network[4][i,2]))
                     neuron = Ellipse(pos=(app.game.settings.width * 30 + 62 + 460, 342 + 130 + i * 40), size=(23, 23))
                     self.outputNeurons.append(neuron)
 
@@ -232,6 +234,11 @@ class Controller (Widget):
             # on activation deactivate all others
             app.game.settings.circling = False
             app.game.settings.random = False
+
+            # faster speed for ai
+            Clock.unschedule(app.clock)
+            app.speed = 20
+            app.clock = Clock.schedule_interval(app.drawingArea.update, (app.speed * 0.0025))
 
     def changeDirection (self, direction):
         # if player is playing save direction in database
@@ -351,7 +358,7 @@ class SnakeGame (object):
         print("========================")
 
         # reset clock/speed
-        if app.game.settings.random:
+        if app.game.settings.random or app.game.settings.aiControlled:
             Clock.unschedule(app.clock)
             app.speed = 20
             app.clock = Clock.schedule_interval(app.drawingArea.update, (app.speed * 0.0025))
@@ -385,8 +392,6 @@ class SnakeGame (object):
 
         # AI CONTROLLING including AI predict
         if self.settings.aiControlled:
-            print(self.aiSensors)
-
             # ai sensor values to input array
             x = []
             x.append(1)
