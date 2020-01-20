@@ -40,10 +40,12 @@ class DrawingArea(GridLayout):
         self.labelInfo.text = text
         if app.game.settings.running:
             app.game.updateScreen()
-            self.food.pos = (25 + (app.game.food.x* 25), 25 + (app.game.food.y* 25))
+            self.food.pos = (20 + (app.game.food.x* 25), 20 + (app.game.food.y* 25))
             i = 0
+            picture = "head" + str(app.game.newDirection) + ".png"
+            self.snake[0].source = picture
             while i < len(app.game.snake):
-                self.snake[i].pos = (25 + (app.game.snake[i].x* 25), 25 + (app.game.snake[i].y* 25))
+                self.snake[i].pos = (20 + (app.game.snake[i].x* 25), 20 + (app.game.snake[i].y* 25))
                 i += 1
 
             app.game.ticks += 1
@@ -58,32 +60,34 @@ class DrawingArea(GridLayout):
 
         with self.canvas:
             # Box
-            Color(0.3,0.3,0.3,1)
-            self.box = Rectangle(pos=(20, 20), size=(app.game.settings.width* 25, app.game.settings.height* 25))
-            Color(1,0,0,1)
-            self.food = Ellipse(pos=(0, 0), size=(20, 20))
+            Color(1,1,1,1)
+            self.box = Rectangle(source='bg1.png', pos=(20, 20), size=(app.game.settings.width* 25, app.game.settings.height* 25))
+            Color(1,1,1,1)
+            picture = "food" + str(randrange(1, 5, 1)) + ".png"
+            self.food = Rectangle(source=picture, pos=(0, 0), size=(25, 25))
             Color(1,1,1,1)
             self.snake = []
-            self.head = Ellipse(pos=(0, 0), size=(20, 20))
+            self.head = Rectangle(pos=(0, 0), size=(25, 25))
             self.snake.append(self.head)
             self.labelInfo = Label(pos=(40, app.game.settings.height * 25 + 60))
 
     def addTile (self):
         with self.canvas:
             Color(1,1,1,1)
-            self.tile = Ellipse(pos=(0, 0), size=(20, 20))
+            self.tile = Rectangle(source="body.png", pos=(0, 0), size=(25, 25))
             self.snake.append(self.tile)
 
     def startGame(self):
         self.canvas.clear()
         with self.canvas:
-            Color(0.3,0.3,0.3,1)
-            self.box = Rectangle(pos=(20, 20), size=(app.game.settings.width* 25, app.game.settings.height* 25))
-            Color(0,1,0,1)
-            self.food = Ellipse(pos=(0, 0), size=(20, 20))
+            Color(1,1,1,1)
+            self.box = Rectangle(source='bg1.png', pos=(20, 20), size=(app.game.settings.width* 25, app.game.settings.height* 25))
+            Color(1,1,1,1)
+            picture = "food" + str(randrange(1, 5, 1)) + ".png"
+            self.food = Rectangle(source=picture, pos=(0, 0), size=(25, 25))
             Color(1,1,1,1)
             self.snake = []
-            self.head = Ellipse(pos=(0, 0), size=(20, 20))
+            self.head = Rectangle(pos=(0, 0), size=(25, 25))
             self.snake.append(self.head)
             self.labelInfo = Label(pos=(40, app.game.settings.height * 25 + 60))
             self.aiSensorHeaderDown = Label(pos=(500, app.game.settings.height * 25 + 130), bold=True, text="DOWN:")
