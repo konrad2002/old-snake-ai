@@ -1,4 +1,5 @@
 # SnakeAI
+[![Run on Repl.it](https://repl.it/badge/github/konrad2002/SnakeAI)](https://repl.it/github/konrad2002/SnakeAI)
 little python snake ai with multi lapyer percetron learning and genetic algorithm
 ![snake ai app 1.5](http://logilutions.de/files/snakeai6.png)
 
