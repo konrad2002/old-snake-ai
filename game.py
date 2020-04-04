@@ -44,7 +44,47 @@ class DrawingArea(GridLayout):
             i = 0
             picture = "head" + str(app.game.newDirection) + ".png"
             self.snake[0].source = picture
-            while i < len(app.game.snake):
+            l = len(app.game.snake)
+            if app.game.settings.hasEated:
+                l += -1
+                self.snake[l].source = "tail.png"
+                app.game.settings.hasEated = False
+            if l > 2:
+                tail = 0
+                if app.game.snake[l-2].x < app.game.snake[i-1].x:
+                    tail = 1
+                if app.game.snake[l-2].x > app.game.snake[i-1].x:
+                    tail = 3
+                if app.game.snake[l-2].y < app.game.snake[i-1].y:
+                    tail = 2
+                if app.game.snake[l-2].y > app.game.snake[i-1].y:
+                    tail = 0
+                self.snake[l-1].source = "tail" + str(tail) + ".png"
+
+            while i < l:
+                if i > 0 and i < l-1:
+                    # conditions for edges
+                    coming = 0
+                    if app.game.snake[i-1].x < app.game.snake[i].x:
+                        coming = 3
+                    if app.game.snake[i-1].x > app.game.snake[i].x:
+                        coming = 1
+                    if app.game.snake[i-1].y < app.game.snake[i].y:
+                        coming = 0
+                    if app.game.snake[i-1].y > app.game.snake[i].y:
+                        coming = 2
+                        
+                    going = 2
+                    if app.game.snake[i+1].x < app.game.snake[i].x:
+                        going = 3
+                    if app.game.snake[i+1].x > app.game.snake[i].x:
+                        going = 1
+                    if app.game.snake[i+1].y < app.game.snake[i].y:
+                        going = 0
+                    if app.game.snake[i+1].y > app.game.snake[i].y:
+                        going = 2
+
+                    self.snake[i].source = "body" + str(coming) + "-" + str(going) + ".png"
                 self.snake[i].pos = (20 + (app.game.snake[i].x* 25), 20 + (app.game.snake[i].y* 25))
                 i += 1
 
@@ -121,7 +161,7 @@ class visAI (Widget):
                     # draw input neurons and save in array
                     self.inputNeurons = []
                     for i in range(13):
-                        Color(1,1,1,(app.ai.network[0][i] / 24))
+                        Color(1,1,1,(app.ai.network[0][i,2] / 24))
                         if i == 0:
                             # if bias color red
                             Color(1,0.1,0.1,1)
@@ -131,7 +171,7 @@ class visAI (Widget):
                     # draw hidden neurons and save in array
                     Color(1,1,1,1)
                     self.hiddenNeurons = []
-                    for i in range(17):
+                    for i in range(app.ai.nHiddenNeurons + 1):
                         Color(1,1,1,(app.ai.network[2][i,2]))
                         if i == 0:
                             # if bias color red
@@ -150,26 +190,26 @@ class visAI (Widget):
                     Color(1,1,1,1)
                     for i,n in enumerate(self.inputNeurons):
                         for j,m in enumerate(self.hiddenNeurons):
-                            brightness = ( abs(app.ai.network[1][j,i]) / 4)
+                            brightness = ( abs(app.ai.network[1][j,i]) / 10)
                             if brightness >= 1:
                                 brightness = 1
                             if app.ai.network[1][j,i] < 0:
                                 Color(0.1, 0.5, 1, 1)
                             else:
                                 Color(1, 0.3, 0.3, 1)
-                            Line(points=[app.game.settings.width * 25 + 62 + 20 + 23, 80 + i * 50 + 11, app.game.settings.width * 25 + 62 + 320, 50 + j * 42 + 11], width=brightness*2)
+                            Line(points=[app.game.settings.width * 25 + 62 + 20 + 23, 80 + i * 50 + 11, app.game.settings.width * 25 + 62 + 320, 50 + j * 42 + 11], width=brightness)
 
                     Color(1,1,1,1)
                     for i,n in enumerate(self.hiddenNeurons):
                         for j,m in enumerate(self.outputNeurons):
-                            brightness = ( abs(app.ai.network[3][j+1,i]) / 4)
+                            brightness = ( abs(app.ai.network[3][j+1,i]) / 2)
                             if brightness >= 1:
                                 brightness = 1
                             if app.ai.network[3][j+1,i] < 0:
                                 Color(0.1, 0.5, 1, 1)
                             else:
                                 Color(1, 0.3, 0.3, 1)
-                            Line(points=[app.game.settings.width * 25 + 62 + 320 + 23, 50 + i * 42 + 11, app.game.settings.width* 25 + 62 + 580, 300 + j * 60 + 11], width=brightness*2)
+                            Line(points=[app.game.settings.width * 25 + 62 + 320 + 23, 50 + i * 42 + 11, app.game.settings.width* 25 + 62 + 580, 300 + j * 60 + 11], width=brightness)
 
 
 class Controller (Widget):
@@ -365,6 +405,8 @@ class SnakeGame (object):
         self.generateFood()         # create food
         self.eat()                  # eat 2x for start lenght 3
         self.eat()
+        self.eat()
+        self.eat()
 
     def generateFood (self):
         rndx = randrange(0, self.settings.width)    # random x position
@@ -379,6 +421,7 @@ class SnakeGame (object):
         tly = self.snake[lenght - 1].y
         body = Circle(tlx, tly, "tile-" + str(lenght))
         self.snake.append(body)     # add tile to snake
+        self.settings.hasEated = True
         app.drawingArea.addTile()   # create new circle in grafik
         self.settings.score += self.settings.points
         self.generateFood()         # create new food spot
@@ -436,25 +479,23 @@ class SnakeGame (object):
                 # ai sensor values to input array
                 x = []
                 x.append(1)
-                x.append(self.aiSensors[0][0])
-                x.append(self.aiSensors[0][1])
-                x.append(self.aiSensors[0][2])
-                x.append(self.aiSensors[1][0])
-                x.append(self.aiSensors[1][1])
-                x.append(self.aiSensors[1][2])
-                x.append(self.aiSensors[2][0])
-                x.append(self.aiSensors[2][1])
-                x.append(self.aiSensors[2][2])
-                x.append(self.aiSensors[3][0])
-                x.append(self.aiSensors[3][1])
-                x.append(self.aiSensors[3][2])
+                for a in range(4):
+                    for b in range(3):
+                        x.append(self.aiSensors[a][b])
+                        print("{} - {}".format(a,b))
 
                 # calculate output of network
                 output = app.ai.predict(x)
                 print(output)
-
+                m = 0
+                for o in output:
+                    m += o
+                
+                output = output / m
+                np.random.choice(5,3)
+                choosen = np.random.choice(5, size = 1, p = output)
                 # new direction from network ouput
-                self.newDirection = np.argmax(output)
+                self.newDirection = choosen[0] - 1
                 print(self.newDirection)
 
             else:

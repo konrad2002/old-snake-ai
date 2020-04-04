@@ -14,3 +14,4 @@ class Settings (object):
         self.circling = False
         self.visOnPi = False
         self.saveSteps = False
+        self.hasEated = False
