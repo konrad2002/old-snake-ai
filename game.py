@@ -28,6 +28,8 @@ import json
 import socket
 import sqlite3
 
+
+#connection to websocket
 HOST = '192.168.1.84'  # Standard loopback interface address (localhost)
 PORT = 31415        # Port to listen on (non-privileged ports are > 1023)
 
